@@ -1,0 +1,38 @@
+---
+- name: Configure web server
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: true
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start and enable Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Deploy Hello World webpage
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Terraform and Ansible Project</title>
+          </head>
+          <body>
+              <h1>Hello, World!</h1>
+              <p>Deployed with Terraform and Ansible on AWS.</p>
+          </body>
+          </html>
+        owner: root
+        group: root
+        mode: '0644'
