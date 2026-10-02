@@ -4,16 +4,17 @@
 
 This project demonstrates infrastructure provisioning and configuration management using **Terraform** and **Ansible** on AWS.
 
-Terraform is used to provision the AWS infrastructure, including:
+Terraform is used to provision:
 
 - EC2 instance
 - S3 bucket
-- IAM role and instance profile
+- IAM role
+- IAM instance profile
 - Security group
 
 Ansible is then used to connect to the EC2 instance, install and configure **Nginx**, and deploy a simple web page displaying **Hello, World!**
 
-The project infrastructure is deployed in the AWS **us-east-2** region.
+The project is deployed in the AWS **us-east-2** region.
 
 ---
 
@@ -24,7 +25,7 @@ Local Mac
    |
    |-- Terraform
    |      |
-   |      +-- AWS EC2 Instance
+   |      +-- EC2 Instance
    |      +-- S3 Bucket
    |      +-- IAM Role
    |      +-- IAM Instance Profile
@@ -41,7 +42,7 @@ Local Mac
                         +-- Hello, World!
 ```
 
-Terraform handles the infrastructure provisioning, while Ansible handles the operating system and web server configuration.
+Terraform provisions the infrastructure, while Ansible configures the EC2 server.
 
 ---
 
@@ -99,20 +100,20 @@ aws-terraform-ansible-webserver/
 └── README.md
 ```
 
-Sensitive and local Terraform files such as `terraform.tfvars`, Terraform state files, `.terraform/`, and private key files are excluded from Git using `.gitignore`.
+Sensitive Terraform files such as `terraform.tfvars`, Terraform state files, `.terraform/`, and private key files are excluded from Git using `.gitignore`.
 
 ---
 
 # Prerequisites
 
-The following tools are required:
+The following are required:
 
 - AWS account
 - AWS CLI
 - Terraform
 - Ansible
 - Git
-- An existing EC2 SSH key pair
+- Existing EC2 SSH key pair
 
 Verify AWS CLI access:
 
@@ -120,13 +121,13 @@ Verify AWS CLI access:
 aws sts get-caller-identity
 ```
 
-Verify the configured AWS region:
+Verify the configured region:
 
 ```bash
 aws configure get region
 ```
 
-For this project:
+Project region:
 
 ```text
 us-east-2
@@ -150,9 +151,7 @@ ansible --version
 
 ## AWS Provider
 
-Terraform uses the AWS provider with the region configured through a variable.
-
-Example:
+Terraform uses the AWS provider with the AWS region configured through a variable.
 
 ```hcl
 provider "aws" {
@@ -160,7 +159,7 @@ provider "aws" {
 }
 ```
 
-The project uses:
+Region used:
 
 ```text
 us-east-2
@@ -199,7 +198,7 @@ variable "key_name" {
 
 The EC2 key pair value is provided locally using `terraform.tfvars`.
 
-The `terraform.tfvars` file is not committed to GitHub.
+The `terraform.tfvars` file is excluded from GitHub.
 
 ---
 
@@ -207,7 +206,7 @@ The `terraform.tfvars` file is not committed to GitHub.
 
 Terraform provisions an Ubuntu EC2 instance.
 
-The Ubuntu AMI is dynamically retrieved through AWS Systems Manager Parameter Store instead of hardcoding an AMI ID.
+The Ubuntu AMI is retrieved dynamically using AWS Systems Manager Parameter Store.
 
 ```hcl
 data "aws_ssm_parameter" "ubuntu_ami" {
@@ -215,7 +214,7 @@ data "aws_ssm_parameter" "ubuntu_ami" {
 }
 ```
 
-The EC2 instance uses:
+Instance configuration:
 
 ```text
 Instance Type: t3.micro
@@ -234,21 +233,21 @@ Terraform creates a security group allowing:
 | 22 | TCP | SSH |
 | 80 | TCP | HTTP |
 
-Port `22` allows Ansible and SSH access to the EC2 instance.
+Port `22` is used for SSH and Ansible access.
 
-Port `80` allows users to access the Nginx web server.
+Port `80` allows access to the Nginx website.
 
 ---
 
 ## IAM
 
-Terraform creates:
+Terraform creates an IAM role:
 
 ```text
 terraform-ansible-ec2-role
 ```
 
-and an EC2 instance profile:
+and an instance profile:
 
 ```text
 terraform-ansible-ec2-profile
@@ -258,9 +257,9 @@ The instance profile attaches the IAM role to the EC2 instance.
 
 ---
 
-## S3
+## S3 Bucket
 
-Terraform provisions an Amazon S3 bucket using a generated bucket prefix:
+Terraform provisions an S3 bucket using the prefix:
 
 ```text
 terraform-ansible-project-
@@ -328,7 +327,7 @@ Success! The configuration is valid.
 terraform plan
 ```
 
-This displays the AWS resources Terraform will create before making any changes.
+This displays the AWS resources Terraform plans to create.
 
 ![Terraform Plan](screenshots/03-terraform-plan.png)
 
@@ -362,10 +361,10 @@ Run:
 terraform output
 ```
 
-Terraform returns information such as:
+Terraform returns:
 
 - EC2 public IP
-- Web server URL
+- Website URL
 - S3 bucket name
 
 ![Terraform Outputs](screenshots/05-terraform-outputs.png)
@@ -376,7 +375,7 @@ Terraform returns information such as:
 
 ## EC2 Instance
 
-The EC2 instance was successfully provisioned and entered the `Running` state.
+Terraform successfully provisioned the EC2 instance.
 
 Instance name:
 
@@ -402,7 +401,7 @@ us-east-2a
 
 ## S3 Bucket
 
-Terraform successfully created the project S3 bucket.
+Terraform successfully created the S3 bucket.
 
 ![S3 Bucket](screenshots/07-aws-s3-bucket.png)
 
@@ -418,7 +417,7 @@ Terraform created the IAM role used by the EC2 instance.
 
 ## Security Group
 
-The security group allows SSH and HTTP access required for Ansible administration and website access.
+The security group provides SSH and HTTP access required for the project.
 
 ![Security Group](screenshots/09-security-group.png)
 
@@ -428,20 +427,20 @@ The security group allows SSH and HTTP access required for Ansible administratio
 
 After Terraform creates the infrastructure, Ansible configures the EC2 instance.
 
-The Ansible playbook performs the following tasks:
+The playbook performs the following tasks:
 
-1. Connects to the EC2 instance using SSH.
+1. Connects to the EC2 instance through SSH.
 2. Updates the Ubuntu package cache.
 3. Installs Nginx.
-4. Starts the Nginx service.
-5. Enables Nginx to start automatically at boot.
+4. Starts Nginx.
+5. Enables Nginx at boot.
 6. Deploys a custom `index.html` file.
 
 ---
 
 ## Ansible Inventory
 
-The EC2 instance is defined inside:
+The EC2 host is defined in:
 
 ```text
 ansible/inventory.ini
@@ -454,7 +453,7 @@ Example:
 EC2_PUBLIC_DNS ansible_user=ubuntu ansible_ssh_private_key_file="/path/to/private-key.pem"
 ```
 
-The private SSH key itself is not stored in the GitHub repository.
+The SSH private key itself is not stored in the repository.
 
 ---
 
@@ -466,7 +465,7 @@ Change to the Ansible directory:
 cd ansible
 ```
 
-Test communication with the EC2 instance:
+Test connectivity:
 
 ```bash
 ansible all -i inventory.ini -m ping
@@ -491,15 +490,13 @@ The playbook is located at:
 ansible/webserver.yml
 ```
 
-The playbook installs and configures Nginx and deploys the web page.
-
-Run:
+Run the playbook:
 
 ```bash
 ansible-playbook -i inventory.ini webserver.yml
 ```
 
-A successful deployment shows:
+A successful run shows:
 
 ```text
 unreachable=0
@@ -512,7 +509,7 @@ failed=0
 
 # Web Application
 
-After Ansible completes, the website can be accessed using the EC2 public IP address.
+After Ansible completes, the website is available through the EC2 public IP.
 
 Current deployment:
 
@@ -536,9 +533,9 @@ Deployed with Terraform and Ansible on AWS.
 
 # Terraform State Verification
 
-Terraform tracks the deployed AWS resources in its local state.
+Terraform tracks the AWS resources it manages in its local state.
 
-To display the managed resources:
+Run:
 
 ```bash
 terraform state list
@@ -561,9 +558,9 @@ aws_security_group.web_sg
 
 # Testing the Website
 
-The web server can also be tested from the command line.
+The website can also be tested from Terminal.
 
-Using the public IP:
+Using the EC2 public IP:
 
 ```bash
 curl http://3.14.144.109
@@ -575,15 +572,11 @@ Or using the EC2 public DNS name:
 curl http://EC2-PUBLIC-DNS
 ```
 
-A successful response returns the HTML generated by the Ansible playbook.
+A successful response returns the HTML deployed by the Ansible playbook.
 
 ---
 
 # How Terraform and Ansible Work Together
-
-Terraform and Ansible perform different roles in this project.
-
-### Terraform
 
 Terraform provisions the AWS infrastructure:
 
@@ -596,13 +589,11 @@ Terraform
    +-- Security Group
 ```
 
-Terraform answers the question:
+Terraform answers:
 
 > What infrastructure should exist?
 
-### Ansible
-
-Ansible configures the EC2 server after Terraform creates it:
+Ansible configures the EC2 server:
 
 ```text
 Ansible
@@ -613,19 +604,19 @@ Ansible
    +-- Deploy webpage
 ```
 
-Ansible answers the question:
+Ansible answers:
 
 > How should the server be configured?
 
-Together, they provide automated infrastructure provisioning and server configuration.
+Together, Terraform and Ansible automate both infrastructure provisioning and server configuration.
 
 ---
 
 # Security Considerations
 
-Sensitive files are excluded from the Git repository.
+Sensitive files are excluded from the repository.
 
-The `.gitignore` file prevents files such as the following from being committed:
+The `.gitignore` file prevents the following from being committed:
 
 ```text
 .terraform/
@@ -636,15 +627,15 @@ terraform.tfvars
 .DS_Store
 ```
 
-Private SSH keys and Terraform state should never be committed to a public or private source control repository.
+Private SSH keys and Terraform state should not be stored in source control.
 
-For a production environment, SSH access should also be restricted to trusted IP addresses instead of allowing unrestricted access to port `22`.
+For a production environment, SSH access should be restricted to trusted IP addresses rather than allowing unrestricted access to port `22`.
 
 ---
 
 # Cleanup
 
-After the project has been reviewed, the AWS infrastructure can be removed using Terraform.
+After the project has been reviewed, the AWS resources can be removed with Terraform.
 
 Change to the Terraform directory:
 
@@ -670,10 +661,10 @@ Terraform will delete the AWS resources managed by this project.
 
 # Results
 
-This project successfully demonstrates:
+This project demonstrates:
 
 - Infrastructure as Code using Terraform
-- Automated AWS resource provisioning
+- AWS resource provisioning
 - EC2 deployment
 - S3 provisioning
 - IAM configuration
@@ -681,7 +672,7 @@ This project successfully demonstrates:
 - Configuration management using Ansible
 - Automated Nginx installation
 - Automated web page deployment
-- SSH-based remote server management
+- SSH-based server management
 - Git and GitHub version control
 
-The final result is a working Nginx web server running on an AWS EC2 instance and displaying a **Hello, World!** web page.
+The final result is a working Nginx web server running on AWS EC2 and displaying a **Hello, World!** web page.
