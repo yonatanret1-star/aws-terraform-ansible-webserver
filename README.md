@@ -293,7 +293,7 @@ Expected result:
 Terraform has been successfully initialized!
 ```
 
-![Terraform Init](screenshots/01-terraform-init.png)
+![Terraform Init](Screenshots/01-terraform-init.png)
 
 ---
 
@@ -317,7 +317,7 @@ Expected result:
 Success! The configuration is valid.
 ```
 
-![Terraform Validate](screenshots/02-terraform-validate.png)
+![Terraform Validate](Screenshots/02-terraform-validate.png)
 
 ---
 
@@ -329,7 +329,7 @@ terraform plan
 
 This displays the AWS resources Terraform plans to create.
 
-![Terraform Plan](screenshots/03-terraform-plan.png)
+![Terraform Plan](Screenshots/03-terraform-plan.png)
 
 ---
 
@@ -349,7 +349,7 @@ when prompted.
 
 Terraform provisions the AWS resources and displays the resulting outputs.
 
-![Terraform Apply](screenshots/04-terraform-apply.png)
+![Terraform Apply](Screenshots/04-terraform-apply.png)
 
 ---
 
@@ -367,7 +367,7 @@ Terraform returns:
 - Website URL
 - S3 bucket name
 
-![Terraform Outputs](screenshots/05-terraform-outputs.png)
+![Terraform Outputs](Screenshots/05-terraform-outputs.png)
 
 ---
 
@@ -395,7 +395,7 @@ Availability Zone:
 us-east-2a
 ```
 
-![EC2 Running](screenshots/06-aws-ec2-running.png)
+![EC2 Running](Screenshots/06-aws-ec2-running.png)
 
 ---
 
@@ -403,7 +403,7 @@ us-east-2a
 
 Terraform successfully created the S3 bucket.
 
-![S3 Bucket](screenshots/07-aws-s3-bucket.png)
+![S3 Bucket](Screenshots/07-aws-s3-bucket.png)
 
 ---
 
@@ -411,7 +411,7 @@ Terraform successfully created the S3 bucket.
 
 Terraform created the IAM role used by the EC2 instance.
 
-![IAM Role](screenshots/08-aws-iam-role.png)
+![IAM Role](Screenshots/08-aws-iam-role.png)
 
 ---
 
@@ -419,7 +419,7 @@ Terraform created the IAM role used by the EC2 instance.
 
 The security group provides SSH and HTTP access required for the project.
 
-![Security Group](screenshots/09-security-group.png)
+![Security Group](Screenshots/09-security-group.png)
 
 ---
 
@@ -478,7 +478,7 @@ SUCCESS
 "ping": "pong"
 ```
 
-![Ansible Ping](screenshots/10-ansible-ping.png)
+![Ansible Ping](Screenshots/10-ansible-ping.png)
 
 ---
 
@@ -503,7 +503,7 @@ unreachable=0
 failed=0
 ```
 
-![Ansible Playbook](screenshots/11-ansible-playbook-success.png)
+![Ansible Playbook](Screenshots/11-ansible-playbook-success.png)
 
 ---
 
@@ -525,7 +525,7 @@ Hello, World!
 Deployed with Terraform and Ansible on AWS.
 ```
 
-![Hello World Website](screenshots/12-hello-world-website.png)
+![Hello World Website](Screenshots/12-hello-world-website.png)
 
 > Note: The public IP may change if the EC2 instance is stopped or recreated unless an Elastic IP is assigned.
 
@@ -551,8 +551,8 @@ aws_instance.web_server
 aws_s3_bucket.project_bucket
 aws_security_group.web_sg
 ```
-
-![Terraform State](screenshots/13-terraform-state.png)
+stu
+![Terraform State](Screenshots/13-terraform-state.png)
 
 ---
 
